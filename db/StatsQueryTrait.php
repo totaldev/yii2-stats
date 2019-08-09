@@ -12,7 +12,7 @@ use yii\db\QueryBuilder;
 /**
  * @property $modelClass
  */
-trait ActiveQueryTrait
+trait StatsQueryTrait
 {
     /** @see Query::$select */
     public $select;

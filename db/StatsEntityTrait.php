@@ -4,7 +4,7 @@ namespace totaldev\yii\stats\db;
 
 use totaldev\yii\stats\query\ActiveQuery;
 
-trait ActiveEntityTrait
+trait StatsEntityTrait
 {
     static protected $attributes = [];
 
