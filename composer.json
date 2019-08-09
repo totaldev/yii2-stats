@@ -1,0 +1,26 @@
+{
+  "name": "totaldev/yii2-stats",
+  "description": "Yii2 active record stats prototype mechanic",
+  "version": "0.1.0",
+  "keywords": [
+    "yii2",
+    "active record",
+    "stats"
+  ],
+  "type": "yii2-extension",
+  "license": "GPLv2",
+  "authors": [
+    {
+      "name": "Kovalenko Vadim"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "yiisoft/yii2": "^2.0@stable"
+  },
+  "autoload": {
+    "psr-4": {
+      "totaldev\\yii\\stats\\": ""
+    }
+  }
+}
