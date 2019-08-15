@@ -1,7 +1,7 @@
 {
   "name": "totaldev/yii2-stats",
   "description": "Yii2 active record stats prototype mechanic",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "keywords": [
     "yii2",
     "active record",
