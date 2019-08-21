@@ -173,7 +173,7 @@ trait StatsQueryTrait
                 && !in_array($metricExpression['with'], (array)$this->with)
                 && !key_exists($metricExpression['with'], (array)$this->with)
             ) {
-                $this->with($metricExpression['with']);
+                $this->joinWith($metricExpression['with'], true);
             }
             return $field;
         } else {
