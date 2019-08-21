@@ -171,7 +171,7 @@ trait StatsQueryTrait
             if (
                 isset($metricExpression['with'])
                 && !in_array($metricExpression['with'], (array)$this->with)
-                && key_exists($metricExpression['with'], (array)$this->with)
+                && !key_exists($metricExpression['with'], (array)$this->with)
             ) {
                 $this->with($metricExpression['with']);
             }
