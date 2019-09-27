@@ -21,8 +21,7 @@ trait StatsQueryTrait
     /** @see ActiveQueryTrait::$with */
     public $with;
     /** @var array */
-    protected $metricScheme;
-
+    protected $metricScheme = [];
 
     /**
      * Returns the number of records.
@@ -52,7 +51,7 @@ trait StatsQueryTrait
      * If null, the DB connection returned by [[modelClass]] will be used.
      * @return Command the created DB command instance.
      */
-    public function createCommand($db = null)
+    public function createCommand($db = null): Command
     {
         /* @var $modelClass ActiveRecord */
         $modelClass = $this->modelClass;
@@ -61,7 +60,7 @@ trait StatsQueryTrait
         }
 
         if ($this->sql === null) {
-            list ($sql, $params) = $db->getQueryBuilder()->build($this);
+            [$sql, $params] = $db->getQueryBuilder()->build($this);
         } else {
             $sql = $this->sql;
             $params = $this->params;
@@ -70,11 +69,7 @@ trait StatsQueryTrait
         return $db->createCommand($sql, $params);
     }
 
-    /**
-     * @param $name
-     * @return bool
-     */
-    public function isMetric($name)
+    public function isMetric(string $name): bool
     {
         return isset($this->getMetricScheme()[$name]);
     }
@@ -113,7 +108,7 @@ trait StatsQueryTrait
      * @return $this
      * @throws InvalidConfigException
      */
-    protected function groupByPreProcess()
+    protected function groupByPreProcess(): self
     {
         if (empty($this->groupBy)) {
             return $this;
@@ -122,7 +117,7 @@ trait StatsQueryTrait
         foreach ($this->groupBy as &$field) {
             if (is_string($field) && $this->isMetric($field)) {
                 $field = $this->interpretMetricExpression($field);
-            } elseif (!empty($this->select) && !in_array($field, $this->select)) {
+            } elseif (!empty($this->select) && !in_array($field, $this->select, true)) {
                 $this->select = array_merge([$field => $field], $this->select);
             }
         }
@@ -165,20 +160,22 @@ trait StatsQueryTrait
     {
         if (is_string($metricExpression)) {
             return $this->interpretMetricExpression($metricExpression);
-        } elseif (is_array($metricExpression)) {
+        }
+
+        if (is_array($metricExpression)) {
 
             $field = $this->interpretMetricExpression($metricExpression['expression']);
             if (
                 isset($metricExpression['with'])
-                && !in_array($metricExpression['with'], (array)$this->with)
-                && !key_exists($metricExpression['with'], (array)$this->with)
+                && !array_key_exists($metricExpression['with'], (array)$this->with)
+                && !in_array($metricExpression['with'], (array)$this->with, true)
             ) {
-                $this->joinWith($metricExpression['with'], true);
+                $this->joinWith($metricExpression['with']);
             }
             return $field;
-        } else {
-            throw new InvalidConfigException("Broken select field or metric scheme: $alias or " . var_export($metricExpression, true));
         }
+
+        throw new InvalidConfigException("Broken select field or metric scheme: $alias or " . var_export($metricExpression, true));
     }
 
     /**
@@ -197,7 +194,7 @@ trait StatsQueryTrait
             $this->select = $defaultSelect;
         }
 
-        if (is_string($this->select) && ('' === $this->select || '*' === $this->select)) {
+        if (('' === $this->select || '*' === $this->select)) {
             $this->select = array_keys($metricScheme);
             $this->select = array_combine($this->select, $this->select);
         } elseif (is_string($this->select)) {
