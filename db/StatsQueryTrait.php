@@ -71,7 +71,7 @@ trait StatsQueryTrait
 
     public function isMetric(string $name): bool
     {
-        return isset($this->getMetricScheme()[$name]);
+        return !empty($this->getMetricScheme()[$name]);
     }
 
     /**
@@ -98,7 +98,7 @@ trait StatsQueryTrait
      */
     protected function getMetricScheme()
     {
-        if (!isset($this->metricScheme)) {
+        if (empty($this->metricScheme)) {
             $this->metricScheme = forward_static_call([$this->modelClass, 'getMetricScheme']);
         }
         return $this->metricScheme;
