@@ -2,6 +2,7 @@
 
 namespace totaldev\yii\stats\db;
 
+use Exception;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
 use yii\db\Command;
@@ -21,7 +22,7 @@ trait StatsQueryTrait
     /** @see ActiveQueryTrait::$with */
     public $with;
     /** @var array */
-    protected $metricScheme = [];
+    protected array $metricScheme = [];
 
     /**
      * Returns the number of records.
@@ -81,7 +82,7 @@ trait StatsQueryTrait
      * @param QueryBuilder $builder
      * @return $this a prepared query instance which will be used by [[QueryBuilder]] to build the SQL
      * @throws InvalidConfigException
-     * @throws \Exception
+     * @throws Exception
      * @see \yii\db\QueryBuilder::build
      */
     public function prepare($builder)
@@ -117,8 +118,12 @@ trait StatsQueryTrait
         foreach ($this->groupBy as &$field) {
             if (is_string($field) && $this->isMetric($field)) {
                 $field = $this->interpretMetricExpression($field);
-            } elseif (!empty($this->select) && !in_array($field, $this->select, true)) {
-                $this->select = array_merge([$field => $field], $this->select);
+            } elseif (
+                !empty($this->select)
+                && !in_array($field, $this->select, true)
+                && !isset($this->select[$field])
+            ) {
+                $this->select[$field] = $field;
             }
         }
         return $this;
@@ -181,7 +186,7 @@ trait StatsQueryTrait
     /**
      * @param string|array $defaultSelect
      * @return $this
-     * @throws \Exception
+     * @throws Exception
      */
     protected function selectPreProcess($defaultSelect = '*')
     {
