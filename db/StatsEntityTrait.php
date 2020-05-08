@@ -2,7 +2,7 @@
 
 namespace totaldev\yii\stats\db;
 
-use totaldev\yii\stats\query\ActiveQuery;
+use totaldev\yii\stats\query\StatsActiveQuery;
 
 trait StatsEntityTrait
 {
@@ -11,7 +11,7 @@ trait StatsEntityTrait
     /** @inheritdoc */
     public static function find()
     {
-        return new ActiveQuery(get_called_class());
+        return new StatsActiveQuery(static::class);
     }
 
     /**
@@ -46,6 +46,6 @@ trait StatsEntityTrait
      */
     public function hasMetric(string $metric): bool
     {
-        return key_exists($metric, static::getMetricScheme());
+        return array_key_exists($metric, static::getMetricScheme());
     }
 }
