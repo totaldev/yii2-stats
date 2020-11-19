@@ -105,6 +105,11 @@ trait StatsQueryTrait
         return $this->metricScheme;
     }
 
+    protected function getMetric($name)
+    {
+        return @$this->getMetricScheme()[$name];
+    }
+
     /**
      * @return $this
      * @throws InvalidConfigException
@@ -117,7 +122,7 @@ trait StatsQueryTrait
 
         foreach ($this->groupBy as &$field) {
             if (is_string($field) && $this->isMetric($field)) {
-                $field = $this->interpretMetricExpression($field);
+                $field = $this->interpretMetricExpression($this->getMetric($field));
             } elseif (
                 !empty($this->select)
                 && !in_array($field, $this->select, true)
